@@ -30,6 +30,7 @@ export default function ScrollFrameSequence({
   outroBlack = 0.88,
   introContent,
   beats = [],
+  onReady,
   children,
 }) {
   const containerRef = useRef(null);
@@ -39,6 +40,7 @@ export default function ScrollFrameSequence({
   const imagesRef = useRef([]);
   const currentFrameRef = useRef(-1);
   const beatRefs = useRef([]);
+  const onReadyFiredRef = useRef(false);
   const [ready, setReady] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -47,6 +49,14 @@ export default function ScrollFrameSequence({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     );
   }, []);
+
+  useEffect(() => {
+    if (onReadyFiredRef.current || !onReady) return;
+    if (reduceMotion || ready) {
+      onReadyFiredRef.current = true;
+      onReady();
+    }
+  }, [reduceMotion, ready, onReady]);
 
   useEffect(() => {
     if (reduceMotion) return;
