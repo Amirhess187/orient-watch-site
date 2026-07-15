@@ -6,7 +6,7 @@ import "./Hero.css";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Hero({ onReady }) {
+export default function Hero({ onProgress }) {
   const scrollIndicatorRef = useRef(null);
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function Hero({ onReady }) {
       outroBlack={0.88}
       introContent={introContent}
       beats={beats}
-      onReady={onReady}
+      onProgress={onProgress}
     >
       <div
         ref={scrollIndicatorRef}

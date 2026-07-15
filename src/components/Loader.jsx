@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 import "./Loader.css";
 
 const MIN_VISIBLE_MS = 500;
-const FALLBACK_MS = 6000;
+const FALLBACK_MS = 15000;
 const EXIT_DURATION_MS = 500;
+const READY_THRESHOLD = 0.98;
 
-export default function Loader({ ready }) {
+export default function Loader({ progress }) {
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
   const [forceReady, setForceReady] = useState(false);
   const [exiting, setExiting] = useState(false);
@@ -20,8 +21,10 @@ export default function Loader({ ready }) {
     };
   }, []);
 
+  const contentReady = progress >= READY_THRESHOLD || forceReady;
+
   useEffect(() => {
-    if (!minTimeElapsed || !(ready || forceReady)) return;
+    if (!minTimeElapsed || !contentReady) return;
 
     let cancelled = false;
     Promise.resolve(document.fonts?.ready).finally(() => {
@@ -31,7 +34,7 @@ export default function Loader({ ready }) {
     return () => {
       cancelled = true;
     };
-  }, [minTimeElapsed, ready, forceReady]);
+  }, [minTimeElapsed, contentReady]);
 
   useEffect(() => {
     if (!exiting) return;
@@ -48,9 +51,17 @@ export default function Loader({ ready }) {
 
   if (!mounted) return null;
 
+  const percent = Math.min(100, Math.round(progress * 100));
+
   return (
     <div className={`loader ${exiting ? "loader--exit" : ""}`} aria-hidden="true">
-      <span className="loader__mark">ا</span>
+      <div className="loader__content">
+        <span className="loader__mark">ا</span>
+        <span className="loader__wordmark">اورینت</span>
+        <div className="loader__bar">
+          <div className="loader__bar-fill" style={{ width: `${percent}%` }} />
+        </div>
+      </div>
     </div>
   );
 }

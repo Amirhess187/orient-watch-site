@@ -31,7 +31,7 @@ export default function ScrollFrameSequence({
   outroBlack = 0.88,
   introContent,
   beats = [],
-  onReady,
+  onProgress,
   children,
 }) {
   const containerRef = useRef(null);
@@ -40,11 +40,12 @@ export default function ScrollFrameSequence({
   const introRef = useRef(null);
   const imagesRef = useRef([]);
   const loadingRef = useRef(new Set());
+  const settledCountRef = useRef(0);
   const currentFrameRef = useRef(-1);
   const latestTargetRef = useRef(-1);
   const redrawRef = useRef(null);
   const beatRefs = useRef([]);
-  const onReadyFiredRef = useRef(false);
+  const progressFiredRef = useRef(false);
   const [ready, setReady] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -66,27 +67,29 @@ export default function ScrollFrameSequence({
     loadingRef.current.add(i);
     return new Promise((resolve) => {
       const img = new Image();
+      const settle = (result) => {
+        loadingRef.current.delete(i);
+        settledCountRef.current += 1;
+        onProgress?.(settledCountRef.current / frameCount);
+        resolve(result);
+      };
       img.onload = () => {
         images[i] = img;
-        loadingRef.current.delete(i);
         if (latestTargetRef.current === i) redrawRef.current?.(i);
-        resolve(img);
+        settle(img);
       };
-      img.onerror = () => {
-        loadingRef.current.delete(i);
-        resolve(null);
-      };
+      img.onerror = () => settle(null);
       img.src = frameUrl(framesBase, i);
     });
-  }, [framesBase]);
+  }, [framesBase, frameCount, onProgress]);
 
+  // Reduced-motion renders a single static poster instead of streaming
+  // frames — there's nothing to progressively load, so report done at once.
   useEffect(() => {
-    if (onReadyFiredRef.current || !onReady) return;
-    if (reduceMotion || ready) {
-      onReadyFiredRef.current = true;
-      onReady();
-    }
-  }, [reduceMotion, ready, onReady]);
+    if (!reduceMotion || progressFiredRef.current) return;
+    progressFiredRef.current = true;
+    onProgress?.(1);
+  }, [reduceMotion, onProgress]);
 
   useEffect(() => {
     if (reduceMotion) return;
@@ -94,6 +97,7 @@ export default function ScrollFrameSequence({
     let cancelled = false;
     imagesRef.current = new Array(frameCount);
     loadingRef.current = new Set();
+    settledCountRef.current = 0;
 
     const FIRST_BATCH = Math.min(10, frameCount);
 

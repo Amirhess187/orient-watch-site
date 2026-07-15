@@ -14,6 +14,13 @@
   pointer-events: none;
 }
 
+.loader__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .loader__mark {
   display: inline-flex;
   align-items: center;
@@ -26,6 +33,29 @@
   font-size: 1.4rem;
   color: var(--accent-gold);
   animation: loader-pulse 2s ease-in-out infinite;
+}
+
+.loader__wordmark {
+  font-family: var(--font-display);
+  font-size: 0.8rem;
+  letter-spacing: 0.25em;
+  color: var(--muted-foreground);
+}
+
+.loader__bar {
+  width: 140px;
+  height: 2px;
+  margin-top: var(--space-1);
+  border-radius: 999px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.loader__bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent-gold);
+  transition: width 300ms var(--ease-out);
 }
 
 @keyframes loader-pulse {
@@ -45,5 +75,8 @@
     animation: none;
     opacity: 1;
     border-color: var(--accent-gold);
+  }
+  .loader__bar-fill {
+    transition: none;
   }
 }

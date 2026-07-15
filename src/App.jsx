@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import CraftSection from "./components/CraftSection";
@@ -13,15 +13,16 @@ import { useSmoothScroll } from "./lib/smoothScroll";
 
 function App() {
   useSmoothScroll();
-  const [heroReady, setHeroReady] = useState(false);
+  const [heroProgress, setHeroProgress] = useState(0);
+  const handleHeroProgress = useCallback((p) => setHeroProgress(p), []);
 
   return (
     <>
-      <Loader ready={heroReady} />
+      <Loader progress={heroProgress} />
       <Header />
       <SideIndexRail />
       <main>
-        <Hero onReady={() => setHeroReady(true)} />
+        <Hero onProgress={handleHeroProgress} />
         <CraftSection />
         {watches.map((watch, i) => (
           <WatchSection key={watch.id} watch={watch} reverse={i % 2 === 1} />
