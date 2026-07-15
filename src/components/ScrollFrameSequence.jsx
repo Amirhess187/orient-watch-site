@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./ScrollFrameSequence.css";
@@ -7,6 +7,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const IMAGE_SCALE = 0.86;
 const EDGE_FADE = 0.06;
+const BACKGROUND_LOAD_CONCURRENCY = 8;
 
 function frameUrl(framesBase, index) {
   return `${framesBase}frame_${String(index + 1).padStart(4, "0")}.webp`;
@@ -38,7 +39,10 @@ export default function ScrollFrameSequence({
   const blackRef = useRef(null);
   const introRef = useRef(null);
   const imagesRef = useRef([]);
+  const loadingRef = useRef(new Set());
   const currentFrameRef = useRef(-1);
+  const latestTargetRef = useRef(-1);
+  const redrawRef = useRef(null);
   const beatRefs = useRef([]);
   const onReadyFiredRef = useRef(false);
   const [ready, setReady] = useState(false);
@@ -49,6 +53,32 @@ export default function ScrollFrameSequence({
       window.matchMedia("(prefers-reduced-motion: reduce)").matches
     );
   }, []);
+
+  // Loads a single frame, de-duplicating in-flight requests. Whichever caller
+  // triggers the real network request, arrival redraws the canvas if that
+  // frame is still what the scroll position currently wants — this lets a
+  // fast scroll "jump the queue" and see its frame the instant it lands,
+  // instead of waiting for the next scroll tick to notice it loaded.
+  const loadFrame = useCallback((i) => {
+    const images = imagesRef.current;
+    if (images[i]) return Promise.resolve(images[i]);
+    if (loadingRef.current.has(i)) return Promise.resolve(null);
+    loadingRef.current.add(i);
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        images[i] = img;
+        loadingRef.current.delete(i);
+        if (latestTargetRef.current === i) redrawRef.current?.(i);
+        resolve(img);
+      };
+      img.onerror = () => {
+        loadingRef.current.delete(i);
+        resolve(null);
+      };
+      img.src = frameUrl(framesBase, i);
+    });
+  }, [framesBase]);
 
   useEffect(() => {
     if (onReadyFiredRef.current || !onReady) return;
@@ -62,20 +92,8 @@ export default function ScrollFrameSequence({
     if (reduceMotion) return;
 
     let cancelled = false;
-    const images = new Array(frameCount);
-    imagesRef.current = images;
-
-    function loadFrame(i) {
-      return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => {
-          images[i] = img;
-          resolve();
-        };
-        img.onerror = resolve;
-        img.src = frameUrl(framesBase, i);
-      });
-    }
+    imagesRef.current = new Array(frameCount);
+    loadingRef.current = new Set();
 
     const FIRST_BATCH = Math.min(10, frameCount);
 
@@ -86,16 +104,28 @@ export default function ScrollFrameSequence({
       if (cancelled) return;
       setReady(true);
 
-      for (let i = FIRST_BATCH; i < frameCount; i++) {
-        if (cancelled) return;
-        await loadFrame(i);
+      // Stream the remaining frames with several requests in flight at once —
+      // loading them one at a time is latency-bound and, on a real network
+      // (unlike localhost), can take far longer than the user needs to scroll
+      // past what's already loaded.
+      let next = FIRST_BATCH;
+      async function worker() {
+        while (!cancelled && next < frameCount) {
+          await loadFrame(next++);
+        }
       }
+      await Promise.all(
+        Array.from(
+          { length: Math.min(BACKGROUND_LOAD_CONCURRENCY, frameCount - FIRST_BATCH) },
+          worker
+        )
+      );
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [framesBase, frameCount, reduceMotion]);
+  }, [frameCount, reduceMotion, loadFrame]);
 
   useEffect(() => {
     if (reduceMotion || !ready) return;
@@ -130,6 +160,11 @@ export default function ScrollFrameSequence({
     resize();
     window.addEventListener("resize", resize);
 
+    redrawRef.current = (index) => {
+      currentFrameRef.current = index;
+      requestAnimationFrame(() => drawFrame(index));
+    };
+
     const videoSpan = Math.max(outroBlack - introBlack, 0.01);
 
     const trigger = ScrollTrigger.create({
@@ -144,10 +179,14 @@ export default function ScrollFrameSequence({
           Math.max((p - introBlack) / videoSpan, 0),
           1
         );
-        let index = Math.min(
+        const targetIndex = Math.min(
           Math.floor(videoProgress * frameCount),
           frameCount - 1
         );
+        latestTargetRef.current = targetIndex;
+        if (!imagesRef.current[targetIndex]) loadFrame(targetIndex);
+
+        let index = targetIndex;
         while (index > 0 && !imagesRef.current[index]) index--;
         if (index !== currentFrameRef.current) {
           currentFrameRef.current = index;
@@ -176,9 +215,10 @@ export default function ScrollFrameSequence({
 
     return () => {
       window.removeEventListener("resize", resize);
+      redrawRef.current = null;
       trigger.kill();
     };
-  }, [ready, reduceMotion, frameCount, bgColor, beats, introBlack, outroBlack]);
+  }, [ready, reduceMotion, frameCount, bgColor, beats, introBlack, outroBlack, loadFrame]);
 
   return (
     <section
