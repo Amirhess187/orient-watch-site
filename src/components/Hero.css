@@ -1,0 +1,113 @@
+.hero__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hero__intro-title {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  color: #ffffff;
+}
+
+.hero__beat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.hero__tagline {
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--foreground);
+}
+
+.hero__cta {
+  margin-top: var(--space-1);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 14px 32px;
+  border: 1px solid var(--accent-gold);
+  border-radius: 999px;
+  color: var(--accent-gold);
+  text-decoration: none;
+  font-size: 0.9rem;
+  letter-spacing: 0.05em;
+  text-shadow: none;
+  transition:
+    background 200ms var(--ease-out),
+    color 200ms var(--ease-out),
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+
+.hero__cta:hover {
+  background: var(--accent-gold);
+  color: #0a0908;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -8px color-mix(in srgb, var(--accent-gold) 45%, transparent);
+}
+
+.hero__cta:active {
+  transform: scale(0.97);
+  transition-duration: 110ms;
+}
+
+.hero__scroll-indicator {
+  position: absolute;
+  bottom: var(--space-5);
+  right: var(--space-4);
+  z-index: 2;
+  width: 1px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.25);
+  opacity: 1;
+  transition: opacity 300ms var(--ease-out);
+}
+
+.hero__scroll-indicator--hidden {
+  opacity: 0;
+}
+
+.hero__scroll-indicator--hidden span {
+  animation-play-state: paused;
+}
+
+.hero__scroll-indicator span {
+  position: absolute;
+  top: 0;
+  right: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  animation: scroll-dot 2.2s var(--ease-out) infinite;
+}
+
+@keyframes scroll-dot {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(58px);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__scroll-indicator span {
+    animation: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero__scroll-indicator {
+    display: none;
+  }
+}

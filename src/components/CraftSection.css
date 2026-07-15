@@ -1,0 +1,28 @@
+.craft__intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.craft__intro-title {
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: #ffffff;
+  max-width: 20ch;
+}
+
+.craft__beat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.craft__title {
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  color: #ffffff;
+}
+
+.craft__text {
+  color: var(--foreground);
+}

@@ -1,0 +1,119 @@
+.site-header {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 40;
+  padding-block: 12px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.55) 0%, rgba(0, 0, 0, 0) 100%);
+  transition:
+    background 300ms var(--ease-out),
+    backdrop-filter 300ms var(--ease-out);
+}
+
+.site-header--solid {
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.site-header .brand,
+.site-header .primary-nav a {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 1px 12px rgba(0, 0, 0, 0.5);
+}
+
+.site-header .menu-toggle svg {
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.8));
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  text-decoration: none;
+  color: var(--foreground);
+}
+
+.brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.08em;
+}
+
+.menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  color: var(--foreground);
+}
+
+.primary-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  font-size: 0.95rem;
+  color: var(--muted-foreground);
+}
+
+.primary-nav a {
+  text-decoration: none;
+  transition: color 200ms var(--ease-out);
+}
+
+.primary-nav a:hover {
+  color: var(--accent-gold);
+}
+
+.primary-nav a[aria-current="page"] {
+  color: var(--accent-gold);
+}
+
+@media (max-width: 768px) {
+  .menu-toggle {
+    display: inline-flex;
+  }
+
+  .primary-nav {
+    position: fixed;
+    inset: 0;
+    top: 0;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-4);
+    background: var(--bg);
+    font-size: 1.4rem;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition:
+      transform 300ms var(--ease-out),
+      opacity 300ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  .primary-nav--open {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
