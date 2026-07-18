@@ -204,6 +204,9 @@ export default function ScrollFrameSequence({
         if (p <= introBlack) {
           blackOpacity = 1 - Math.min(p / Math.max(introBlack, 0.001), 1);
           introOpacity = blackOpacity;
+        } else if (p >= outroBlack) {
+          const outroSpan = Math.max(1 - outroBlack, 0.001);
+          blackOpacity = Math.min((p - outroBlack) / outroSpan, 1);
         }
         if (blackRef.current) blackRef.current.style.opacity = blackOpacity;
         if (introRef.current) introRef.current.style.opacity = introOpacity;
