@@ -117,7 +117,19 @@ export default function Loader({ progress }) {
               }}
             />
           </svg>
-          <span className="loader__mark">ا</span>
+          <span className="loader__mark">
+            <svg
+              className="loader__mark-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <circle cx="12" cy="12" r="9.25" stroke="currentColor" strokeWidth="1.3" />
+              <line x1="12" y1="12" x2="7.7" y2="9.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <line x1="12" y1="12" x2="16.3" y2="8.4" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+              <circle cx="12" cy="12" r="0.9" fill="currentColor" />
+            </svg>
+          </span>
         </div>
         <span className="loader__wordmark">اورینت</span>
         <p className={`loader__phrase ${phraseVisible ? "" : "loader__phrase--hidden"}`}>

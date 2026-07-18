@@ -24,13 +24,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .loader__ring-wrap {
   position: relative;
-  width: 96px;
-  height: 96px;
+  width: 152px;
+  height: 152px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -47,13 +47,13 @@
 .loader__ring-track {
   fill: none;
   stroke: var(--border);
-  stroke-width: 1.5;
+  stroke-width: 2;
 }
 
 .loader__ring-progress {
   fill: none;
   stroke: var(--accent-gold);
-  stroke-width: 1.5;
+  stroke-width: 2;
   stroke-linecap: round;
   transition: stroke-dashoffset 300ms var(--ease-out);
 }
@@ -64,35 +64,38 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: 92px;
+  height: 92px;
   border-radius: 50%;
   border: 1px solid var(--border);
   background: var(--bg);
-  font-family: var(--font-display);
-  font-size: 1.4rem;
   color: var(--accent-gold);
-  box-shadow: 0 0 26px -6px color-mix(in srgb, var(--accent-gold) 50%, transparent);
+  box-shadow: 0 0 32px -6px color-mix(in srgb, var(--accent-gold) 50%, transparent);
+}
+
+.loader__mark-icon {
+  width: 40px;
+  height: 40px;
 }
 
 .loader__wordmark {
   font-family: var(--font-display);
-  font-size: 0.8rem;
-  letter-spacing: 0.25em;
+  font-size: 1.15rem;
+  letter-spacing: 0.3em;
   color: var(--muted-foreground);
 }
 
 .loader__phrase {
   margin: 0;
-  max-width: 300px;
-  min-height: 44px;
+  max-width: 420px;
+  min-height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-body);
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.7;
   text-align: center;
   color: var(--muted-foreground);
   transition: opacity 450ms var(--ease-out);
