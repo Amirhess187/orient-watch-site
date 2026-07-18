@@ -17,8 +17,11 @@ const PHRASES = [
   "کیفیت، عجله نمی‌شناسد.",
   "دقت، در سکوت شکل می‌گیرد.",
 ];
-const PHRASE_INTERVAL_MS = 2600;
-const PHRASE_FADE_MS = 350;
+const PHRASE_INTERVAL_MS = 4800;
+const PHRASE_FADE_MS = 450;
+
+const RING_RADIUS = 46;
+const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 export default function Loader({ progress }) {
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
@@ -89,19 +92,37 @@ export default function Loader({ progress }) {
 
   if (!mounted) return null;
 
-  const percent = Math.min(100, Math.round(progress * 100));
+  const clampedProgress = Math.min(1, progress);
+  const ringOffset = RING_CIRCUMFERENCE * (1 - clampedProgress);
 
   return (
     <div className={`loader ${exiting ? "loader--exit" : ""}`} aria-hidden="true">
       <div className="loader__content">
-        <span className="loader__mark">ا</span>
+        <div className="loader__ring-wrap">
+          <svg className="loader__ring" viewBox="0 0 100 100">
+            <circle
+              className="loader__ring-track"
+              cx="50"
+              cy="50"
+              r={RING_RADIUS}
+            />
+            <circle
+              className="loader__ring-progress"
+              cx="50"
+              cy="50"
+              r={RING_RADIUS}
+              style={{
+                strokeDasharray: RING_CIRCUMFERENCE,
+                strokeDashoffset: ringOffset,
+              }}
+            />
+          </svg>
+          <span className="loader__mark">ا</span>
+        </div>
         <span className="loader__wordmark">اورینت</span>
         <p className={`loader__phrase ${phraseVisible ? "" : "loader__phrase--hidden"}`}>
           {PHRASES[phraseIndex]}
         </p>
-        <div className="loader__bar">
-          <div className="loader__bar-fill" style={{ width: `${percent}%` }} />
-        </div>
       </div>
     </div>
   );
