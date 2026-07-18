@@ -42,6 +42,26 @@
   color: var(--muted-foreground);
 }
 
+.loader__phrase {
+  margin: 0;
+  max-width: 300px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 300;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--muted-foreground);
+  transition: opacity 350ms var(--ease-out);
+}
+
+.loader__phrase--hidden {
+  opacity: 0;
+}
+
 .loader__bar {
   width: 140px;
   height: 2px;
@@ -77,6 +97,9 @@
     border-color: var(--accent-gold);
   }
   .loader__bar-fill {
+    transition: none;
+  }
+  .loader__phrase {
     transition: none;
   }
 }

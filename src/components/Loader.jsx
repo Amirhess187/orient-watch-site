@@ -9,11 +9,24 @@ const FALLBACK_MS = 45000;
 const EXIT_DURATION_MS = 500;
 const READY_THRESHOLD = 0.98;
 
+const PHRASES = [
+  "سکوت را در جزئیات می‌جویند.",
+  "آرامش را در ژرفا جست‌وجو می‌کنند، نه در سطح.",
+  "هر قطعه، دستِ یک استاد.",
+  "سه عنصر طبیعت، یک ساعت اورینت.",
+  "کیفیت، عجله نمی‌شناسد.",
+  "دقت، در سکوت شکل می‌گیرد.",
+];
+const PHRASE_INTERVAL_MS = 2600;
+const PHRASE_FADE_MS = 350;
+
 export default function Loader({ progress }) {
   const [minTimeElapsed, setMinTimeElapsed] = useState(false);
   const [forceReady, setForceReady] = useState(false);
   const [exiting, setExiting] = useState(false);
   const [mounted, setMounted] = useState(true);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [phraseVisible, setPhraseVisible] = useState(true);
 
   useEffect(() => {
     const minTimer = setTimeout(() => setMinTimeElapsed(true), MIN_VISIBLE_MS);
@@ -21,6 +34,28 @@ export default function Loader({ progress }) {
     return () => {
       clearTimeout(minTimer);
       clearTimeout(fallbackTimer);
+    };
+  }, []);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    let fadeTimer;
+    const interval = setInterval(() => {
+      if (reduceMotion) {
+        setPhraseIndex((i) => (i + 1) % PHRASES.length);
+        return;
+      }
+      setPhraseVisible(false);
+      fadeTimer = setTimeout(() => {
+        setPhraseIndex((i) => (i + 1) % PHRASES.length);
+        setPhraseVisible(true);
+      }, PHRASE_FADE_MS);
+    }, PHRASE_INTERVAL_MS);
+    return () => {
+      clearInterval(interval);
+      clearTimeout(fadeTimer);
     };
   }, []);
 
@@ -61,6 +96,9 @@ export default function Loader({ progress }) {
       <div className="loader__content">
         <span className="loader__mark">ا</span>
         <span className="loader__wordmark">اورینت</span>
+        <p className={`loader__phrase ${phraseVisible ? "" : "loader__phrase--hidden"}`}>
+          {PHRASES[phraseIndex]}
+        </p>
         <div className="loader__bar">
           <div className="loader__bar-fill" style={{ width: `${percent}%` }} />
         </div>
