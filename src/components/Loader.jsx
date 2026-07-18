@@ -97,6 +97,7 @@ export default function Loader({ progress }) {
 
   return (
     <div className={`loader ${exiting ? "loader--exit" : ""}`} aria-hidden="true">
+      <span className="loader__brand">Orient</span>
       <div className="loader__content">
         <div className="loader__ring-wrap">
           <svg className="loader__ring" viewBox="0 0 100 100">
@@ -131,7 +132,6 @@ export default function Loader({ progress }) {
             </svg>
           </span>
         </div>
-        <span className="loader__wordmark">اورینت</span>
         <p className={`loader__phrase ${phraseVisible ? "" : "loader__phrase--hidden"}`}>
           {PHRASES[phraseIndex]}
         </p>

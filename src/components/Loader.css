@@ -78,10 +78,16 @@
   height: 40px;
 }
 
-.loader__wordmark {
+.loader__brand {
+  position: absolute;
+  top: var(--space-5);
+  inset-inline: 0;
+  text-align: center;
   font-family: var(--font-display);
-  font-size: 1.15rem;
-  letter-spacing: 0.3em;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
   color: var(--muted-foreground);
 }
 
@@ -97,7 +103,7 @@
   font-weight: 300;
   line-height: 1.7;
   text-align: center;
-  color: var(--muted-foreground);
+  color: var(--foreground);
   transition: opacity 450ms var(--ease-out);
 }
 
