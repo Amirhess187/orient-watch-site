@@ -57,6 +57,8 @@
 }
 
 .menu-toggle {
+  position: relative;
+  z-index: 1;
   display: none;
   align-items: center;
   justify-content: center;
@@ -115,5 +117,13 @@
     transform: translateY(0);
     opacity: 1;
     pointer-events: auto;
+  }
+
+  .primary-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding-inline: var(--space-3);
   }
 }

@@ -51,6 +51,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .watch-section__eyebrow {
@@ -83,6 +84,7 @@
 
 .watch-section__media {
   position: relative;
+  min-width: 0;
 }
 
 .watch-section__media-frame {
@@ -222,5 +224,24 @@
     max-width: none;
     margin: 0 !important;
     justify-self: stretch !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .watch-section {
+    padding-block: var(--space-5);
+  }
+
+  .watch-section__inner,
+  .watch-section--reverse .watch-section__inner {
+    gap: var(--space-4);
+  }
+
+  .watch-section__specs {
+    gap: var(--space-1);
+  }
+
+  .watch-section__story {
+    max-width: 40ch;
   }
 }

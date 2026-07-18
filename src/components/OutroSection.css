@@ -23,3 +23,10 @@
   color: #ffffff;
   white-space: normal;
 }
+
+@media (max-width: 480px) {
+  .outro-section {
+    min-height: 50svh;
+    padding-block: var(--space-6);
+  }
+}
