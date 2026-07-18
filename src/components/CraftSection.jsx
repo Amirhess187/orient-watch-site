@@ -1,7 +1,7 @@
 import ScrollFrameSequence from "./ScrollFrameSequence";
 import "./CraftSection.css";
 
-export default function CraftSection() {
+export default function CraftSection({ onProgress }) {
   const introContent = (
     <div className="craft__intro">
       <span className="section-label">II — پیش از دیدن</span>
@@ -59,6 +59,7 @@ export default function CraftSection() {
       outroBlack={0.9}
       introContent={introContent}
       beats={beats}
+      onProgress={onProgress}
     />
   );
 }

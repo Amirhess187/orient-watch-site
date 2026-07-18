@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 import "./Loader.css";
 
 const MIN_VISIBLE_MS = 500;
-const FALLBACK_MS = 15000;
+// A true last resort (e.g. a request that never settles) — not a normal-path
+// cap. Frame loads always eventually resolve (errors still count toward
+// progress), so this should essentially never fire in practice.
+const FALLBACK_MS = 45000;
 const EXIT_DURATION_MS = 500;
 const READY_THRESHOLD = 0.98;
 

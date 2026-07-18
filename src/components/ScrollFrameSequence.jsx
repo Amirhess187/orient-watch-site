@@ -136,6 +136,8 @@ export default function ScrollFrameSequence({
 
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     function resize() {
