@@ -4,6 +4,7 @@ import "./CustomCursor.css";
 
 const INTERACTIVE_SELECTOR =
   "a, button, input, textarea, [role='button'], .spec-card";
+const ACTIVE_SCALE = 1.35;
 
 export default function CustomCursor() {
   const [enabled, setEnabled] = useState(false);
@@ -44,7 +45,7 @@ export default function CustomCursor() {
     const handleOver = (e) => {
       if (e.target.closest?.(INTERACTIVE_SELECTOR)) {
         ring.classList.add("custom-cursor__ring--active");
-        gsap.to(ring, { scale: 1.7, duration: 0.3, ease: "power2.out" });
+        gsap.to(ring, { scale: ACTIVE_SCALE, duration: 0.3, ease: "power2.out" });
       }
     };
 
@@ -63,7 +64,7 @@ export default function CustomCursor() {
       gsap.to(dot, { scale: 1, duration: 0.15, ease: "power2.out" });
       const isActive = ring.classList.contains("custom-cursor__ring--active");
       gsap.to(ring, {
-        scale: isActive ? 1.7 : 1,
+        scale: isActive ? ACTIVE_SCALE : 1,
         duration: 0.15,
         ease: "power2.out",
       });
@@ -102,6 +103,10 @@ export default function CustomCursor() {
   return (
     <>
       <div ref={ringRef} className="custom-cursor__ring" aria-hidden="true">
+        <span className="custom-cursor__tick custom-cursor__tick--12" />
+        <span className="custom-cursor__tick custom-cursor__tick--3" />
+        <span className="custom-cursor__tick custom-cursor__tick--6" />
+        <span className="custom-cursor__tick custom-cursor__tick--9" />
         <span className="custom-cursor__hand" />
       </div>
       <div ref={dotRef} className="custom-cursor__dot" aria-hidden="true" />

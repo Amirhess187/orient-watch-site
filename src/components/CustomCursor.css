@@ -13,8 +13,8 @@ body.custom-cursor-active textarea {
   position: fixed;
   top: 0;
   left: 0;
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   border: 1px solid var(--accent-gold);
   pointer-events: none;
@@ -30,12 +30,36 @@ body.custom-cursor-active textarea {
   box-shadow: 0 0 24px -4px color-mix(in srgb, var(--accent-gold) 60%, transparent);
 }
 
+.custom-cursor__tick {
+  position: absolute;
+  top: 0;
+  left: calc(50% - 0.5px);
+  width: 1px;
+  height: 3px;
+  background: var(--accent-gold);
+  opacity: 0.8;
+  transform-origin: 50% 12px;
+}
+
+.custom-cursor__tick--12 {
+  transform: rotate(0deg);
+}
+.custom-cursor__tick--3 {
+  transform: rotate(90deg);
+}
+.custom-cursor__tick--6 {
+  transform: rotate(180deg);
+}
+.custom-cursor__tick--9 {
+  transform: rotate(270deg);
+}
+
 .custom-cursor__hand {
   position: absolute;
   top: 50%;
   left: 50%;
   width: 1px;
-  height: 12px;
+  height: 7px;
   background: var(--accent-gold);
   transform-origin: 50% 100%;
   transform: translate(-50%, -100%) rotate(0deg);
@@ -52,8 +76,8 @@ body.custom-cursor-active textarea {
   position: fixed;
   top: 0;
   left: 0;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   border-radius: 50%;
   background: var(--accent-gold);
   pointer-events: none;
