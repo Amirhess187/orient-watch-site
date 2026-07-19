@@ -8,6 +8,7 @@ import OutroSection from "./components/OutroSection";
 import ContactSection from "./components/ContactSection";
 import Footer from "./components/Footer";
 import Loader from "./components/Loader";
+import CustomCursor from "./components/CustomCursor";
 import { watches } from "./data/watches";
 import { useSmoothScroll } from "./lib/smoothScroll";
 
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <>
+      <CustomCursor />
       <Loader progress={loadProgress} />
       <Header />
       <SideIndexRail />
