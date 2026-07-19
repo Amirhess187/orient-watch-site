@@ -204,26 +204,50 @@
   .watch-section__inner,
   .watch-section--reverse .watch-section__inner {
     grid-template-columns: 1fr;
+    justify-items: center;
   }
 
-  .watch-section__text,
-  .watch-section--reverse .watch-section__text,
   .watch-section__media,
   .watch-section--reverse .watch-section__media {
     order: 0;
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .watch-section__text,
+  .watch-section--reverse .watch-section__text {
+    order: 1;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .watch-section__story {
+    max-width: 42ch;
+    margin-inline: auto;
+  }
+
+  .watch-section__price {
+    display: block;
+    width: 100%;
   }
 
   .watch-section__specs {
     position: static;
     width: 100%;
     height: auto;
-    margin-top: var(--space-2);
+    margin-top: var(--space-3);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
   }
 
   .spec-card {
     max-width: none;
     margin: 0 !important;
     justify-self: stretch !important;
+    align-self: stretch !important;
+    text-align: center;
+    align-items: center;
   }
 }
 
@@ -237,8 +261,14 @@
     gap: var(--space-4);
   }
 
+  .watch-section__media,
+  .watch-section--reverse .watch-section__media {
+    max-width: 300px;
+  }
+
   .watch-section__specs {
-    gap: var(--space-1);
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
   }
 
   .watch-section__story {
