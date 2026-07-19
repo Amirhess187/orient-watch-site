@@ -36,10 +36,7 @@ export default function Header() {
     <header ref={headerRef} className="site-header">
       <div className="site-header__inner container">
         <a href="#top" className="brand" aria-label="اورینت، بازگشت به بالای صفحه">
-          <span className="brand__mark" aria-hidden="true">
-            ا
-          </span>
-          <span className="brand__name">اورینت</span>
+          <span className="brand__name">Orient</span>
         </a>
 
         <button
