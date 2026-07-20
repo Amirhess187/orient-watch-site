@@ -46,6 +46,7 @@ export default function ScrollFrameSequence({
   const redrawRef = useRef(null);
   const beatRefs = useRef([]);
   const progressFiredRef = useRef(false);
+  const totalToLoadRef = useRef(frameCount);
   const [ready, setReady] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -70,7 +71,7 @@ export default function ScrollFrameSequence({
       const settle = (result) => {
         loadingRef.current.delete(i);
         settledCountRef.current += 1;
-        onProgress?.(settledCountRef.current / frameCount);
+        onProgress?.(settledCountRef.current / totalToLoadRef.current);
         resolve(result);
       };
       img.onload = () => {
@@ -81,7 +82,7 @@ export default function ScrollFrameSequence({
       img.onerror = () => settle(null);
       img.src = frameUrl(framesBase, i);
     });
-  }, [framesBase, frameCount, onProgress]);
+  }, [framesBase, onProgress]);
 
   // Reduced-motion renders a single static poster instead of streaming
   // frames — there's nothing to progressively load, so report done at once.
@@ -94,16 +95,28 @@ export default function ScrollFrameSequence({
   useEffect(() => {
     if (reduceMotion) return;
 
+    // Phones scrub through this at a coarser resolution (see the
+    // ScrollTrigger effect below) — every other frame is never drawn, so
+    // there's no point spending bandwidth or decode time fetching it.
+    // Halving the working set here is what actually keeps scrubbing smooth
+    // on mobile: fewer bytes competing on a slow connection means fewer
+    // scroll positions land on a not-yet-loaded frame and stall.
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    const step = isMobile ? 2 : 1;
+    const frameIndices = [];
+    for (let i = 0; i < frameCount; i += step) frameIndices.push(i);
+
     let cancelled = false;
     imagesRef.current = new Array(frameCount);
     loadingRef.current = new Set();
     settledCountRef.current = 0;
+    totalToLoadRef.current = frameIndices.length;
 
-    const FIRST_BATCH = Math.min(10, frameCount);
+    const FIRST_BATCH = Math.min(10, frameIndices.length);
 
     (async () => {
       await Promise.all(
-        Array.from({ length: FIRST_BATCH }, (_, i) => loadFrame(i))
+        frameIndices.slice(0, FIRST_BATCH).map((i) => loadFrame(i))
       );
       if (cancelled) return;
       setReady(true);
@@ -114,13 +127,18 @@ export default function ScrollFrameSequence({
       // past what's already loaded.
       let next = FIRST_BATCH;
       async function worker() {
-        while (!cancelled && next < frameCount) {
-          await loadFrame(next++);
+        while (!cancelled && next < frameIndices.length) {
+          await loadFrame(frameIndices[next++]);
         }
       }
       await Promise.all(
         Array.from(
-          { length: Math.min(BACKGROUND_LOAD_CONCURRENCY, frameCount - FIRST_BATCH) },
+          {
+            length: Math.min(
+              BACKGROUND_LOAD_CONCURRENCY,
+              frameIndices.length - FIRST_BATCH
+            ),
+          },
           worker
         )
       );
@@ -181,6 +199,7 @@ export default function ScrollFrameSequence({
     };
 
     const videoSpan = Math.max(outroBlack - introBlack, 0.01);
+    const frameStep = window.matchMedia("(max-width: 768px)").matches ? 2 : 1;
 
     const trigger = ScrollTrigger.create({
       trigger: containerRef.current,
@@ -194,10 +213,16 @@ export default function ScrollFrameSequence({
           Math.max((p - introBlack) / videoSpan, 0),
           1
         );
-        const targetIndex = Math.min(
+        let targetIndex = Math.min(
           Math.floor(videoProgress * frameCount),
           frameCount - 1
         );
+        if (frameStep > 1) {
+          targetIndex = Math.min(
+            Math.round(targetIndex / frameStep) * frameStep,
+            frameCount - 1
+          );
+        }
         latestTargetRef.current = targetIndex;
         if (!imagesRef.current[targetIndex]) loadFrame(targetIndex);
 
