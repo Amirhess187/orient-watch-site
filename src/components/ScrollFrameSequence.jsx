@@ -137,10 +137,19 @@ export default function ScrollFrameSequence({
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
+    // Mobile screens are narrow and tall next to these 1280x720 source
+    // frames, so `cover`-fitting them already upscales significantly. A
+    // full devicePixelRatio on top of that (and high-quality resampling)
+    // multiplies the pixels the canvas has to redraw on every scroll tick
+    // far past what a phone's GPU can keep up with — hence the visible
+    // stutter. Capping DPR and dropping smoothing quality on small
+    // viewports cuts that redraw cost by roughly 4x with no visible loss
+    // at phone viewing distance; desktop is untouched.
     function resize() {
+      const isMobile = window.innerWidth <= 768;
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 2);
+      ctx.imageSmoothingQuality = isMobile ? "medium" : "high";
       canvas.width = canvas.offsetWidth * dpr;
       canvas.height = canvas.offsetHeight * dpr;
       drawFrame(Math.max(currentFrameRef.current, 0));
