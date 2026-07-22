@@ -23,9 +23,9 @@ export function useScrollReveal(ref, { delay = 0 } = {}) {
       {
         opacity: 1,
         y: 0,
-        duration: 1,
+        duration: 1.1,
         delay,
-        ease: "power2.out",
+        ease: "expo.out",
         scrollTrigger: {
           trigger: el,
           start: "top 70%",

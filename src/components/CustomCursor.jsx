@@ -45,14 +45,14 @@ export default function CustomCursor() {
     const handleOver = (e) => {
       if (e.target.closest?.(INTERACTIVE_SELECTOR)) {
         ring.classList.add("custom-cursor__ring--active");
-        gsap.to(ring, { scale: ACTIVE_SCALE, duration: 0.3, ease: "power2.out" });
+        gsap.to(ring, { scale: ACTIVE_SCALE, duration: 0.5, ease: "expo.out" });
       }
     };
 
     const handleOut = (e) => {
       if (e.target.closest?.(INTERACTIVE_SELECTOR)) {
         ring.classList.remove("custom-cursor__ring--active");
-        gsap.to(ring, { scale: 1, duration: 0.3, ease: "power2.out" });
+        gsap.to(ring, { scale: 1, duration: 0.5, ease: "expo.out" });
       }
     };
 

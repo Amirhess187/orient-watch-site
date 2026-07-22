@@ -110,7 +110,7 @@
   object-position: center;
   padding: 22%;
   filter: drop-shadow(0 30px 40px rgba(0, 0, 0, 0.45));
-  transition: transform 400ms var(--ease-out);
+  transition: transform 600ms var(--ease-out);
 }
 
 .watch-section__media-frame:hover .watch-section__media-photo {
@@ -152,9 +152,9 @@
   border-radius: 10px;
   max-width: 220px;
   transition:
-    transform 200ms var(--ease-out),
+    transform 400ms var(--ease-out),
     border-color 200ms var(--ease-out),
-    box-shadow 200ms var(--ease-out);
+    box-shadow 400ms var(--ease-out);
 }
 
 .spec-card:hover {
